@@ -19,20 +19,20 @@ namespace Discount.API
         {
             var host = CreateHostBuilder(args).Build();
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
+            //using (var scope = host.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
 
-                var context = services.GetRequiredService<DataContext>();
-                var unitOfWork = services.GetRequiredService<IUnitOfWork>();
-                if (context.Database.GetPendingMigrations().Any())
-                {
-                   await context.Database.MigrateAsync();
-                }
+            //    var context = services.GetRequiredService<DataContext>();
+            //    var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+            //    if (context.Database.GetPendingMigrations().Any())
+            //    {
+            //       await context.Database.MigrateAsync();
+            //    }
 
-                if(!context.Coupons.Any())
-                    await Seed.SeedCoupon(unitOfWork);
-            }
+            //    if(!context.Coupons.Any())
+            //        await Seed.SeedCoupon(unitOfWork);
+            //}
 
            await host.RunAsync();
         }
