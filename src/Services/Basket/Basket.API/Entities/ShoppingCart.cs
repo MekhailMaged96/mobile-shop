@@ -19,18 +19,20 @@ namespace Basket.API.Entities
             UserName = userName;
         }
 
-        public decimal TotalPrice
-        {
-            get
-            {
-                decimal totalPrice = 0;
-                foreach(var item in Items)
-                {
-                    totalPrice += item.Price * item.Quantity;
-                }
+        public decimal TotalPrice { get; set; }
 
-                return totalPrice;
-            }
-        }
+        //public decimal TotalPrice
+        //{
+        //    get
+        //    {
+        //        decimal totalPrice = 0;
+        //        foreach(var item in Items)
+        //        {
+        //            totalPrice += item.Price * item.Quantity;
+        //        }
+
+        //        return totalPrice;
+        //    }
+        //}
     }
 }
