@@ -1,3 +1,5 @@
+using EventBus.Messages.Common;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Ordering.API.EventBusConsumer;
+using Ordering.API.Middleware;
 using Ordering.Application.Extensions;
 using Ordering.Infrastructure.Extensions;
 using System;
@@ -23,7 +27,7 @@ namespace Ordering.API
             Configuration = configuration;
         }
 
-     
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,7 +36,27 @@ namespace Ordering.API
             services.AddControllers();
             services.AddInfrastructureServices(Configuration);
             services.AddApplicationServices();
+
+            services.AddMassTransit(config =>
+            {
+                config.AddConsumer<BasketCheckoutConsumer>();
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host(Configuration["EventBusSettings:HostAddress"]);
+                    cfg.ReceiveEndpoint(EventBusConstants.BasketCheckoutQueue, c =>
+                    {
+                        c.ConfigureConsumer<BasketCheckoutConsumer>(ctx);
+
+                    });
+                });
+
+
+            });
+            services.AddMassTransitHostedService();
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<BasketCheckoutConsumer>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering.API", Version = "v1" });
@@ -44,10 +68,11 @@ namespace Ordering.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+              //  app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ordering.API v1"));
             }
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseRouting();
 

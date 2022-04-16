@@ -1,13 +1,11 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Ordering.Application.Features.Orders.Commands.CheckoutOrder
+namespace Basket.API.Entities
 {
-    public class CheckoutOrderCommand : IRequest<int>
+    public class BasketCheckout
     {
         public string UserName { get; set; }
         public decimal TotalPrice { get; set; }

@@ -1,13 +1,12 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ordering.Application.Features.Orders.Commands.CheckoutOrder
+namespace EventBus.Messages.Events
 {
-    public class CheckoutOrderCommand : IRequest<int>
+    public class BasketCheckoutEvent : IntegrationBaseEvent
     {
         public string UserName { get; set; }
         public decimal TotalPrice { get; set; }
@@ -27,5 +26,6 @@ namespace Ordering.Application.Features.Orders.Commands.CheckoutOrder
         public string Expiration { get; set; }
         public string CVV { get; set; }
         public int PaymentMethod { get; set; }
+
     }
 }
